@@ -1,0 +1,25 @@
+Django>=4.2,<5.0
+mysqlclient
+djangorestframework
+django-cors-headers
+Pillow
+scikit-learn
+pandas
+numpy
+python-dotenv
+gunicorn
+requests
+# For ML (using lighter versions if possible or standard)
+tensorflow-cpu; sys_platform != 'darwin'
+# or torch -- but let's stick to tensorflow as requested or scikit-learn for now.
+# User asked for PyTorch or TensorFlow. Let's add tensorflow-cpu for size.
+joblib
+matplotlib
+seaborn
+
+
+reportlab
+django-pwa
+dj-database-url
+psycopg2-binary
+whitenoise

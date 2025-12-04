@@ -1,0 +1,14 @@
+*.pyc
+__pycache__/
+db.sqlite3
+.env
+venv/
+env/
+.idea/
+.vscode/
+staticfiles/
+media/
+*.zip
+*.part*
+ml_engine/models/*.h5
+.gemini/

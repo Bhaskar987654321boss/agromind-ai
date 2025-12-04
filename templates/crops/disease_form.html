@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Disease Detection{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Upload Leaf Image</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Select Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Crop Name (Optional)</label>
+                        <input type="text" name="crop_name" class="form-control" placeholder="e.g. Tomato, Wheat">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-danger">Analyze Image</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Or Describe Symptoms</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-pencil-square"></i> Describe what you see</label>
+                        <textarea name="symptoms" class="form-control" rows="3"
+                            placeholder="e.g. yellow spots, curling leaves" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-flower1"></i> Crop Name (Optional)</label>
+                        <input type="text" name="crop_name_symptoms" class="form-control"
+                            placeholder="e.g. Tomato, Wheat">
+                    </div>
+
+                    <!-- New Fields -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-calendar-event"></i> Plant Age (weeks)</label>
+                            <input type="number" step="any" name="plant_age" class="form-control"
+                                placeholder="e.g. 8 (Optional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-percent"></i> Affected Area (%)</label>
+                            <input type="number" step="any" name="affected_area" class="form-control"
+                                placeholder="e.g. 20 (Optional)">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-warning shadow-sm text-dark fw-bold">
+                            <i class="bi bi-search"></i> Analyze Symptoms
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

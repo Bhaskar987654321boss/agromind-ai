@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-4">Smart Farming <span style="color: #2ecc71;">Assistant</span></h1>
+        <p class="lead mb-5 mx-auto" style="max-width: 700px; font-weight: 300;">
+            Boost your farm's productivity with AI-driven insights. Get crop recommendations, predict yields, and detect
+            diseases instantly.
+        </p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5 py-3 shadow-lg">Start Farming Smarter</a>
+        {% else %}
+        <p class="fs-4">Welcome back, <span class="fw-bold text-warning">{{ user.username }}</span>!</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4 py-5">
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4 border-0">
+            <div class="card-body">
+                <div class="mb-4">
+                    <i class="bi bi-flower1 display-4 text-success"></i>
+                </div>
+                <h3 class="card-title mb-3">Crop Recommendation</h3>
+                <p class="card-text mb-4 opacity-75">Not sure what to plant? Enter your soil details and let our AI
+                    suggest the best crops for your region.</p>
+                <a href="{% url 'recommend_crop' %}" class="btn btn-outline-light stretched-link">Get Recommendation</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4 border-0">
+            <div class="card-body">
+                <div class="mb-4">
+                    <i class="bi bi-graph-up-arrow display-4 text-warning"></i>
+                </div>
+                <h3 class="card-title mb-3">Yield Prediction</h3>
+                <p class="card-text mb-4 opacity-75">Estimate your harvest before you plant. Plan your finances and
+                    logistics with accurate yield forecasts.</p>
+                <a href="{% url 'predict_yield' %}" class="btn btn-outline-light stretched-link">Predict Yield</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4 border-0">
+            <div class="card-body">
+                <div class="mb-4">
+                    <i class="bi bi-activity display-4 text-danger"></i>
+                </div>
+                <h3 class="card-title mb-3">Disease Detection</h3>
+                <p class="card-text mb-4 opacity-75">Spot signs of trouble? Upload a photo or describe symptoms to
+                    identify diseases and get treatment advice.</p>
+                <a href="{% url 'detect_disease' %}" class="btn btn-outline-light stretched-link">Check Health</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

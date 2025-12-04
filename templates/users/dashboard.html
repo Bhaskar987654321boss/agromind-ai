@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="fw-bold text-white">My Dashboard</h2>
+            <p class="text-white-50">Welcome back, {{ user.username }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Recommendations -->
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-white"><i class="bi bi-flower1 me-2"></i> Recent Recommendations</h5>
+                    <a href="{% url 'recommend_crop' %}" class="btn btn-sm btn-primary">New Recommendation</a>
+                </div>
+                <div class="card-body">
+                    {% if recommendations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover text-white">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Soil (N-P-K)</th>
+                                    <th>Weather (Temp/Rain)</th>
+                                    <th>Recommended Crop</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rec in recommendations %}
+                                <tr>
+                                    <td>{{ rec.created_at|date:"M d, Y" }}</td>
+                                    <td>{{ rec.nitrogen }}-{{ rec.phosphorus }}-{{ rec.potassium }}</td>
+                                    <td>{{ rec.temperature }}°C / {{ rec.rainfall }}mm</td>
+                                    <td><span class="badge bg-success">{{ rec.recommended_crop }}</span></td>
+                                    <td>{{ rec.confidence|stringformat:".2f" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center py-3">No recommendations yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Yield Predictions -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-white"><i class="bi bi-graph-up-arrow me-2"></i> Recent Yield Predictions</h5>
+                    <a href="{% url 'predict_yield' %}" class="btn btn-sm btn-warning text-dark">Predict Yield</a>
+                </div>
+                <div class="card-body">
+                    {% if yields %}
+                    <div class="list-group list-group-flush">
+                        {% for y in yields %}
+                        <div class="list-group-item bg-transparent text-white border-bottom border-secondary">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ y.crop_name }} ({{ y.area }} ha)</h6>
+                                <small>{{ y.created_at|timesince }} ago</small>
+                            </div>
+                            <p class="mb-1">Predicted: <span class="fw-bold text-warning">{{ y.predicted_yield }}
+                                    Quintals</span></p>
+                            <small class="text-white-50">Inputs: Fertilizer {{ y.fertilizer }}, Irrigation {{
+                                y.irrigation }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center py-3">No yield predictions yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Disease Detections -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-white"><i class="bi bi-activity me-2"></i> Disease History</h5>
+                    <a href="{% url 'detect_disease' %}" class="btn btn-sm btn-danger">Check Disease</a>
+                </div>
+                <div class="card-body">
+                    {% if diseases %}
+                    <div class="list-group list-group-flush">
+                        {% for d in diseases %}
+                        <div class="list-group-item bg-transparent text-white border-bottom border-secondary">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ d.predicted_disease }}</h6>
+                                <small>{{ d.created_at|timesince }} ago</small>
+                            </div>
+                            <p class="mb-1">Confidence: {{ d.confidence|stringformat:".2f" }}</p>
+                            <small class="text-white-50">Symptoms: {{ d.symptoms|truncatechars:30 }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center py-3">No disease checks yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

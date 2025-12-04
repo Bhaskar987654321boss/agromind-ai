@@ -1,0 +1,10 @@
+Loading model...
+
+--- Model Input Details ---
+Expected Input Shape: (None, 256, 256, 3)
+Testing with dummy image of size: 256x256
+Black Image Prediction: Index 0, Confidence 0.5506
+White Image Prediction: Index 2, Confidence 1.0000
+Random Noise Prediction: Index 1, Confidence 1.0000
+
+If all predictions are the same (e.g., Index 1), the model might be biased or expecting different preprocessing.

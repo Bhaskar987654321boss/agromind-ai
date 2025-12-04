@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Yield Prediction Result{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card text-center">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Prediction Result</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Estimated Yield for {{ crop }}</h5>
+                <h1 class="display-4 text-primary fw-bold">{{ prediction }} Quintals</h1>
+                <p class="text-muted">This is an estimate based on historical data and current conditions.</p>
+
+                <a href="{% url 'download_yield_pdf' %}?crop={{ crop }}&area={{ area }}&soil_type={{ soil_type }}&rainfall={{ rainfall }}&temperature={{ temperature }}&fertilizer={{ fertilizer }}&irrigation={{ irrigation }}"
+                    class="btn btn-primary me-2">Download Report (PDF)</a>
+                <a href="{% url 'predict_yield' %}" class="btn btn-outline-secondary">Predict Another</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

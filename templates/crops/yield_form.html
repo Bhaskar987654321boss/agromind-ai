@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Yield Prediction{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Predict Crop Yield</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-flower1"></i> Select Crop</label>
+                            <select name="crop" class="form-select" required>
+                                {% for crop in crops %}
+                                <option value="{{ crop.name }}">{{ crop.name }}</option>
+                                {% empty %}
+                                <option value="Rice">Rice (Default)</option>
+                                <option value="Wheat">Wheat</option>
+                                <option value="Maize">Maize</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-aspect-ratio"></i> Field Area (Hectares)</label>
+                            <input type="number" step="any" name="area" class="form-control" placeholder="e.g. 2.5"
+                                required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="bi bi-layers"></i> Soil Type</label>
+                            <select name="soil_type" class="form-select">
+                                <option value="Alluvial">Alluvial</option>
+                                <option value="Black">Black</option>
+                                <option value="Red">Red</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Sandy">Sandy</option>
+                                <option value="Loam">Loam</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="bi bi-cloud-rain"></i> Rainfall (mm)</label>
+                            <input type="number" step="any" name="rainfall" class="form-control" placeholder="e.g. 100"
+                                required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label"><i class="bi bi-thermometer-half"></i> Temperature (°C)</label>
+                            <input type="number" step="any" name="temperature" value="25" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- New Fields -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-bucket"></i> Fertilizer Used (kg/ha)</label>
+                            <input type="number" step="any" name="fertilizer" class="form-control"
+                                placeholder="e.g. 120 (Optional)">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="bi bi-water"></i> Irrigation Frequency</label>
+                            <select name="irrigation" class="form-select">
+                                <option value="Daily">Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="None">None</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-graph-up-arrow"></i> Predict Yield
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
