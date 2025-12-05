@@ -9,6 +9,11 @@ env/
 staticfiles/
 media/
 *.zip
-*.part*
-ml_engine/models/*.h5
+deploy_part_*
 .gemini/
+
+# Ignore large model files
+ml_engine/models/*.h5
+
+# But allow the split parts
+!*.part*

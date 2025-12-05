@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: agromind-ai
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn crop_project.wsgi:application"
+    plan: free
+    branch: main
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 2

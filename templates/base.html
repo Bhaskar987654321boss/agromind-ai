@@ -205,6 +205,12 @@
                             <i class="bi bi-download"></i> Install App
                         </button>
                     </li>
+                    <li class="nav-item">
+                        <button id="rotate-button" class="btn btn-outline-light rounded-pill px-3 me-2"
+                            onclick="toggleOrientation()">
+                            <i class="bi bi-phone-flip"></i> Rotate
+                        </button>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     {% if user.is_authenticated %}
                     {% if user.is_staff %}
@@ -282,10 +288,67 @@
         });
     </script>
     {% block extra_js %}{% endblock %}
+    <!-- iOS Install Instructions Modal -->
+    <div class="modal fade" id="iosInstallModal" tabindex="-1" aria-labelledby="iosInstallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); color: #333;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="iosInstallModalLabel">Install on iOS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-4">To install this app on your iPhone or iPad:</p>
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <span class="fs-4 me-3">1. Tap</span>
+                        <img src="https://img.icons8.com/ios-glyphs/30/000000/share-rounded.png" alt="Share Icon"
+                            style="width: 24px; height: 24px;">
+                        <span class="fs-4 ms-3"><strong>Share</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <span class="fs-4 me-3">2. Select</span>
+                        <i class="bi bi-plus-square fs-3 mx-2"></i>
+                        <span class="fs-4 ms-3"><strong>Add to Home Screen</strong></span>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Got
+                        it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+
         // PWA Install Prompt
         let deferredPrompt;
         const installButton = document.getElementById('install-button');
+
+        // Manual Rotation Logic
+        async function toggleOrientation() {
+            try {
+                if (document.fullscreenElement) {
+                    await document.exitFullscreen();
+                    await screen.orientation.unlock();
+                } else {
+                    await document.documentElement.requestFullscreen();
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (err) {
+                console.error("Rotation failed:", err);
+                // Fallback for devices that don't support lock but support fullscreen
+                if (!document.fullscreenElement) {
+                    try { await document.documentElement.requestFullscreen(); } catch (e) { }
+                }
+            }
+        }
+
+        // Detect iOS
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // Detect Standalone (already installed)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             // Prevent the mini-infobar from appearing on mobile
@@ -293,31 +356,37 @@
             // Stash the event so it can be triggered later.
             deferredPrompt = e;
             // Update UI notify the user they can install the PWA
-            if (installButton) {
+            if (installButton && !isStandalone) {
                 installButton.style.display = 'block';
             }
         });
 
+        // Show button for iOS users too (if not installed)
+        if (installButton && isIos && !isStandalone) {
+            installButton.style.display = 'block';
+        }
+
         if (installButton) {
             installButton.addEventListener('click', async () => {
-                // Hide the app provided install promotion
-                installButton.style.display = 'none';
-                // Show the install prompt
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                // We've used the prompt, and can't use it again, throw it away
-                deferredPrompt = null;
+                if (deferredPrompt) {
+                    // Android/Chrome Logic
+                    installButton.style.display = 'none';
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    deferredPrompt = null;
+                } else if (isIos) {
+                    // iOS Logic: Show Instructions
+                    const iosModal = new bootstrap.Modal(document.getElementById('iosInstallModal'));
+                    iosModal.show();
+                }
             });
         }
 
         window.addEventListener('appinstalled', () => {
-            // Hide the app-provided install promotion
             if (installButton) {
                 installButton.style.display = 'none';
             }
-            // Clear the deferredPrompt so it can be garbage collected
             deferredPrompt = null;
             console.log('PWA was installed');
         });

@@ -5,6 +5,123 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
+        <!-- Live Camera Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-camera-video"></i> Live Disease Detection</h4>
+            </div>
+            <div class="card-body text-center">
+                <div id="camera-container" style="display: none;">
+                    <video id="video-feed" width="100%" style="border-radius: 10px; border: 2px solid #28a745;" autoplay
+                        playsinline></video>
+                    <canvas id="capture-canvas" style="display: none;"></canvas>
+                </div>
+                <div id="camera-controls" class="mt-3">
+                    <button id="start-camera-btn" class="btn btn-outline-success btn-lg">
+                        <i class="bi bi-camera"></i> Start Camera
+                    </button>
+                    <button id="capture-btn" class="btn btn-success btn-lg" style="display: none;">
+                        <i class="bi bi-bullseye"></i> Capture & Analyze
+                    </button>
+                    <p id="camera-error" class="text-danger mt-2" style="display: none;"></p>
+                </div>
+
+                <!-- Live Result Display -->
+                <div id="live-result" class="mt-4" style="display: none;">
+                    <div class="alert alert-info border-info">
+                        <h5 class="alert-heading fw-bold" id="result-disease"></h5>
+                        <div class="progress mt-2" style="height: 20px;">
+                            <div id="result-confidence-bar" class="progress-bar bg-success" role="progressbar"
+                                style="width: 0%"></div>
+                        </div>
+                        <p class="mb-0 mt-2" id="result-confidence-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const startBtn = document.getElementById('start-camera-btn');
+                const captureBtn = document.getElementById('capture-btn');
+                const video = document.getElementById('video-feed');
+                const canvas = document.getElementById('capture-canvas');
+                const cameraContainer = document.getElementById('camera-container');
+                const errorMsg = document.getElementById('camera-error');
+                const liveResult = document.getElementById('live-result');
+                let stream = null;
+
+                startBtn.addEventListener('click', async () => {
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                        video.srcObject = stream;
+                        cameraContainer.style.display = 'block';
+                        startBtn.style.display = 'none';
+                        captureBtn.style.display = 'inline-block';
+                        errorMsg.style.display = 'none';
+                    } catch (err) {
+                        console.error("Camera Error:", err);
+                        errorMsg.innerText = "Could not access camera. Please allow permissions.";
+                        errorMsg.style.display = 'block';
+                    }
+                });
+
+                captureBtn.addEventListener('click', () => {
+                    // Capture frame
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Convert to blob and send
+                    canvas.toBlob((blob) => {
+                        const formData = new FormData();
+                        formData.append('image', blob, 'live_capture.jpg');
+                        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                        formData.append('crop_name', 'Live Capture'); // Default or could add input
+
+                        // Show analyzing state
+                        liveResult.style.display = 'block';
+                        document.getElementById('result-disease').innerText = "Analyzing...";
+                        document.getElementById('result-confidence-bar').style.width = '100%';
+                        document.getElementById('result-confidence-bar').classList.add('progress-bar-striped', 'progress-bar-animated');
+
+                        fetch('{% url "detect_disease" %}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    const res = data.result;
+                                    document.getElementById('result-disease').innerText = res.disease;
+                                    const confPercent = Math.round(res.confidence * 100);
+                                    document.getElementById('result-confidence-bar').style.width = confPercent + '%';
+                                    document.getElementById('result-confidence-bar').classList.remove('progress-bar-striped', 'progress-bar-animated');
+
+                                    // Color code based on confidence
+                                    const bar = document.getElementById('result-confidence-bar');
+                                    if (confPercent > 80) bar.className = 'progress-bar bg-success';
+                                    else if (confPercent > 50) bar.className = 'progress-bar bg-warning text-dark';
+                                    else bar.className = 'progress-bar bg-danger';
+
+                                    document.getElementById('result-confidence-text').innerText = `Confidence: ${confPercent}%`;
+                                } else {
+                                    document.getElementById('result-disease').innerText = "Error analyzing image.";
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                document.getElementById('result-disease').innerText = "Server Error.";
+                            });
+                    }, 'image/jpeg', 0.95);
+                });
+            });
+        </script>
+
         <div class="card mb-4">
             <div class="card-header bg-danger text-white">
                 <h4 class="mb-0">Upload Leaf Image</h4>

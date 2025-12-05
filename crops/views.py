@@ -365,6 +365,13 @@ def detect_disease(request):
             
             # Pass crop name back to template
             result['crop_name'] = crop_name
+            
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'result': result
+                })
+                
             return render(request, 'crops/disease_result.html', {'result': result})
             
         elif 'symptoms' in request.POST:

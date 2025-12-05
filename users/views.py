@@ -27,8 +27,7 @@ def register(request):
             return render(request, 'users/register.html', {'error': 'Username already exists'})
             
         user = User.objects.create_user(username=username, email=email, password=password, role=role)
-        login(request, user)
-        return redirect('home')
+        return redirect('login')
         
     return render(request, 'users/register.html')
 
