@@ -53,7 +53,13 @@
 
                 startBtn.addEventListener('click', async () => {
                     try {
-                        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: 'environment',
+                                width: { ideal: 512 }, // Request lower resolution to save battery/bandwidth
+                                height: { ideal: 512 }
+                            }
+                        });
                         video.srcObject = stream;
                         cameraContainer.style.display = 'block';
                         startBtn.style.display = 'none';
@@ -67,9 +73,9 @@
                 });
 
                 captureBtn.addEventListener('click', () => {
-                    // Capture frame
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
+                    // Capture frame (Resize to 256x256 for faster upload/inference)
+                    canvas.width = 256;
+                    canvas.height = 256;
                     const context = canvas.getContext('2d');
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
