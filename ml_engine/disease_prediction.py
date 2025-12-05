@@ -191,33 +191,201 @@ class EnsembleDiseasePredictor:
 
     def get_disease_info(self, disease_name):
         """Helper to get static info for diseases."""
-        # Simplified DB for demo
+        # Expanded DB for PlantVillage + Recent
         db = {
             "Fall Armyworm": {
                 "description": "A pest that feeds on leaves and stems of more than 80 plant species.",
-                "treatment": "Apply biological control agents like Bacillus thuringiensis.",
-                "precautions": ["Monitor fields regularly", "Use pheromone traps"]
+                "treatment": "Apply biological control agents like Bacillus thuringiensis or Emamectin benzoate.",
+                "precautions": ["Monitor fields regularly", "Use pheromone traps", "Deep ploughing in summer"]
             },
+            "Locust Infestation": {
+                "description": "Swarms of locusts devouring crops.",
+                "treatment": "Aerial spraying of ULV malathion or fenitrothion.",
+                "precautions": ["Monitor breeding areas", "Community alerts"]
+            },
+            "Wheat Blast": {
+                "description": "Fungal disease affecting wheat heads.",
+                "treatment": "Apply fungicides like Tricyclazole.",
+                "precautions": ["Use resistant varieties", "Crop rotation", "Burn infected residues"]
+            },
+             "Banana Fusarium Wilt TR4": {
+                "description": "Soil-borne fungal disease blocking water flow in banana plants.",
+                "treatment": "No cure. Destroy infected plants immediately.",
+                "precautions": ["Quarantine measures", "Use disease-free planting material", "Disinfect tools"]
+            },
+            
+            # Apple
             "Apple - Apple scab": {
                 "description": "Fungal disease causing dark, scabby spots on fruit and leaves.",
-                "treatment": "Apply fungicides like Captan.",
-                "precautions": ["Remove fallen leaves", "Prune for air circulation"]
+                "treatment": "Apply fungicides like Captan or Myclobutanil.",
+                "precautions": ["Remove fallen leaves", "Prune for air circulation", "Apply urea in autumn"]
+            },
+            "Apple - Black rot": {
+                "description": "Causes rotting of fruit and cankers on limbs.",
+                "treatment": "Remove mummified fruit and prune out cankers.",
+                "precautions": ["Sanitation", "Avoid wounding trees", "Fungicide sprays"]
+            },
+            "Apple - Cedar apple rust": {
+                "description": "Fungal disease causing bright orange spots on leaves.",
+                "treatment": "Remove nearby juniper/cedar hosts if possible. Apply fungicides.",
+                "precautions": ["Plant resistant varieties", "Remove galls from cedars"]
+            },
+            
+            # Cherry
+             "Cherry (including sour) - Powdery mildew": {
+                "description": "White powdery growth on leaves and fruit.",
+                "treatment": "Sulfur-based fungicides or potassium bicarbonate.",
+                "precautions": ["Prune for air circulation", "Avoid overhead irrigation"]
+            },
+            
+            # Corn (Maize)
+            "Corn (maize) - Cercospora leaf spot Gray leaf spot": {
+                "description": "Gray to tan rectangular lesions on leaves.",
+                "treatment": "Fungicides containing strobilurins or triazoles.",
+                "precautions": ["Crop rotation", "Tillage of residue", "Resistant hybrids"]
+            },
+            "Corn (maize) - Common rust ": {
+                "description": "Reddish-brown pustules on both leaf surfaces.",
+                "treatment": "Fungicide application if severe early in season.",
+                "precautions": ["Plant resistant hybrids", "Early planting"]
+            },
+             "Corn (maize) - Northern Leaf Blight": {
+                "description": "Cigar-shaped gray-green lesions on leaves.",
+                "treatment": "Fungicides if applied before tasseling.",
+                "precautions": ["Crop rotation", "Resistant varieties", "Manage residue"]
+            },
+
+            # Grape
+            "Grape - Black rot": {
+                "description": "Brown circular spots on leaves and shriveled black berries.",
+                "treatment": "Fungicides like Mancozeb or Myclobutanil.",
+                "precautions": ["Sanitation (remove mummies)", "Good canopy management"]
+            },
+             "Grape - Esca (Black Measles)": {
+                "description": "Tiger-stripe patterns on leaves and spotting on fruit.",
+                "treatment": "Protect pruning wounds. No cure for established vine.",
+                "precautions": ["Avoid pruning in wet weather", "Remove infected vines"]
+            },
+            "Grape - Leaf blight (Isariopsis Leaf Spot)": {
+                "description": "Dark red angular spots on leaves.",
+                "treatment": "Fungicides used for downy mildew often control this.",
+                "precautions": ["Improve air circulation", "Remove infected leaves"]
+            },
+
+            # Peach
+            "Peach - Bacterial spot": {
+                "description": "Small angular shots or cracks on fruit and leaves.",
+                "treatment": "Copper sprays or oxytetracycline causing bloom.",
+                "precautions": ["Resistant varieties", "Avoid high nitrogen", "Pruning"]
+            },
+
+            # Pepper
+            "Pepper, bell - Bacterial spot": {
+                "description": "Small water-soaked spots on leaves and fruit.",
+                "treatment": "Copper-based bactericides.",
+                "precautions": ["Use disease-free seeds", "Crop rotation", "Mulching"]
+            },
+
+            # Potato
+            "Potato - Early blight": {
+                "description": "Target-like concentric rings on older leaves.",
+                "treatment": "Fungicides like Chlorothalonil or Mancozeb.",
+                "precautions": ["Crop rotation", "Proper irrigation", "Maintain plant vigor"]
+            },
+            "Potato - Late blight": {
+                "description": "Water-soaked lesions on leaves, rapid plant death.",
+                "treatment": "Preventive fungicides (Mancozeb) or systemic ones (Metalaxyl).",
+                "precautions": ["Use certified seed", "Destroy cull piles", "Monitor weather"]
+            },
+
+            # Squash
+            "Squash - Powdery mildew": {
+                "description": "White powdery growth on leaves.",
+                "treatment": "Sulfur, Neem oil, or potassium bicarbonate.",
+                "precautions": ["Resistant varieties", "Space plants well", "Weed control"]
+            },
+
+            # Strawberry
+            "Strawberry - Leaf scorch": {
+                "description": "Purple spots giving a scorched appearance.",
+                "treatment": "Fungicides usually applied for other diseases help.",
+                "precautions": ["Renew plantings often", "Remove infected leaves"]
+            },
+
+            # Tomato
+            "Tomato - Bacterial spot": {
+                "description": "Small dark spots on leaves and scabs on fruit.",
+                "treatment": "Copper sprays + Mancozeb.",
+                "precautions": ["Use disease-free seeds", "Avoid overhead watering", "Crop rotation"]
+            },
+             "Tomato - Early blight": {
+                "description": "Target-like brown spots with yellow halos.",
+                "treatment": "Fungicides like Chlorothalonil or Copper.",
+                "precautions": ["Mulching", "Stake plants", "Remove lower leaves"]
             },
              "Tomato - Late blight": {
-                "description": "Serious fungal disease causing dark lesions on leaves and fruit.",
-                "treatment": "Apply copper-based fungicides.",
-                "precautions": ["Avoid overhead watering", "Remove infected plants"]
-            }
+                "description": "Greasy, gray spots on leaves; fruit rot.",
+                "treatment": "Aggressive fungicide program (Chlorothalonil, Copper).",
+                "precautions": ["Ensure good aeration", "Keep leaves dry", "Remove infected plants immediately"]
+            },
+            "Tomato - Leaf Mold": {
+                "description": "Yellow spots on upper leaf, olive mold on underside.",
+                "treatment": "Fungicides like Copper or Chlorothalonil.",
+                "precautions": ["Reduce humidity (greenhouse)", "Ventilation", "Resistant varieties"]
+            },
+             "Tomato - Septoria leaf spot": {
+                "description": "Small circular spots with gray centers.",
+                "treatment": "Fungicides (Chlorothalonil).",
+                "precautions": ["Remove lower leaves", "Mulching", "Crop rotation"]
+            },
+            "Tomato - Spider mites Two-spotted spider mite": {
+                "description": "Tiny mites causing stippling and webbing.",
+                "treatment": "Miticide or insecticidal soap.",
+                "precautions": ["Avoid dust", "Encourage predatory mites", "Water management"]
+            },
+            "Tomato - Target Spot": {
+                "description": "Brown lesions with concentric rings.",
+                "treatment": "Fungicides (Azoxystrobin).",
+                "precautions": ["Crop rotation", "Good airflow", "Remove debris"]
+            },
+            "Tomato - Tomato Yellow Leaf Curl Virus": {
+                "description": "Yellowing and curling of leaves, stunted growth.",
+                "treatment": "Control whiteflies (vector). No cure for virus.",
+                "precautions": ["Reflective mulches", "Virus-free transplants", "Weed control"]
+            },
+             "Tomato - Tomato mosaic virus": {
+                "description": "Mottling and mosaic patterns on leaves.",
+                "treatment": "No cure. Remove infected plants.",
+                "precautions": ["Sanitize tools", "Wash hands (tobacco users)", "Resistant varieties"]
+            },
+
+            # Healthy
+             "Apple - healthy": {
+                "description": "The plant appears healthy.",
+                "treatment": "Continue standard care.",
+                "precautions": ["Regular monitoring", "Balanced nutrition"]
+            },
+            "Blueberry - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Cherry (including sour) - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Corn (maize) - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Grape - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Peach - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Pepper, bell - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Potato - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Raspberry - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Soybean - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Strawberry - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] },
+            "Tomato - healthy": { "description": "Healthy.", "treatment": "-", "precautions": ["Monitor"] }
         }
         
         # Default info
         default_info = {
             "description": f"Detected {disease_name}. Please consult a local agriculture expert for confirmation.",
             "treatment": "Isolate the plant and apply broad-spectrum fungicide/pesticide if applicable.",
-            "precautions": ["Maintain field hygiene", "Ensure proper drainage"]
+            "precautions": ["Maintain field hygiene", "Ensure proper drainage", "Remove infected parts"]
         }
         
-        return db.get(disease_name, default_info)
+        return db.get(disease_name.strip(), default_info)
 
     def predict_from_symptoms(self, text_description, crop_name=None):
         """

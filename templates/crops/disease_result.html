@@ -24,14 +24,15 @@
                     <p>{{ result.description }}</p>
 
                     <h5 class="mt-3"><i class="bi bi-bandaid"></i> Recommended Treatment & Precautions:</h5>
-                    <div class="alert alert-warning">
+                    <div class="alert alert-warning text-start">
+                        <p class="fw-bold mb-2">{{ result.treatment }}</p>
+                        {% if result.precautions %}
                         <ul class="mb-0">
                             {% for precaution in result.precautions %}
                             <li>{{ precaution }}</li>
-                            {% empty %}
-                            <li>{{ result.treatment }}</li>
                             {% endfor %}
                         </ul>
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}

@@ -1,19 +1,20 @@
-*.pyc
+
+# Python
 __pycache__/
-db.sqlite3
+*.py[cod]
+*$py.class
+
+# Environment
 .env
-venv/
+.venv
 env/
-.idea/
-.vscode/
-staticfiles/
+venv/
+
+# Large Models (using parts instead)
+ml_engine/models/rice_model.h5
+
+# Database
+db.sqlite3
+
+# Media
 media/
-*.zip
-deploy_part_*
-.gemini/
-
-# Ignore large model files
-ml_engine/models/*.h5
-
-# But allow the split parts
-!*.part*
