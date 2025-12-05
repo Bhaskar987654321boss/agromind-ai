@@ -99,18 +99,26 @@ import dj_database_url
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# Render Database Configuration (PostgreSQL)
+if os.getenv('DATABASE_URL'):
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
+
+# MySQL Configuration (Optional Override)
+elif os.getenv('MYSQL_HOST'):
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('MYSQL_DATABASE', 'crop_db'),
         'USER': os.getenv('MYSQL_USER', 'crop_user'),
         'PASSWORD': os.getenv('MYSQL_PASSWORD', 'crop_password'),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'), # Default to localhost for local setup
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
         'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
-}
-
-# Render Database Configuration
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
 
 # Password validation
