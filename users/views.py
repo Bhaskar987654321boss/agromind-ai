@@ -13,6 +13,12 @@ class CustomLoginView(LoginView):
     template_name = 'users/login.html'
     redirect_authenticated_user = True
 
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_staff or (hasattr(user, 'role') and user.role == 'ADMIN'):
+            return reverse_lazy('admin_dashboard')
+        return reverse_lazy('user_dashboard')
+
 def register(request):
     if request.method == 'POST':
         # Simple registration for demo (using default UserCreationForm would need custom user model support)
