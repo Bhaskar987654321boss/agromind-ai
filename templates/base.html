@@ -205,12 +205,7 @@
                             <i class="bi bi-download"></i> Install App
                         </button>
                     </li>
-                    <li class="nav-item">
-                        <button id="rotate-button" class="btn btn-outline-light rounded-pill px-3 me-2"
-                            onclick="toggleOrientation()">
-                            <i class="bi bi-phone-flip"></i> Rotate
-                        </button>
-                    </li>
+
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     {% if user.is_authenticated %}
                     {% if user.is_staff %}
@@ -326,24 +321,7 @@
         let deferredPrompt;
         const installButton = document.getElementById('install-button');
 
-        // Manual Rotation Logic
-        async function toggleOrientation() {
-            try {
-                if (document.fullscreenElement) {
-                    await document.exitFullscreen();
-                    await screen.orientation.unlock();
-                } else {
-                    await document.documentElement.requestFullscreen();
-                    await screen.orientation.lock('landscape');
-                }
-            } catch (err) {
-                console.error("Rotation failed:", err);
-                // Fallback for devices that don't support lock but support fullscreen
-                if (!document.fullscreenElement) {
-                    try { await document.documentElement.requestFullscreen(); } catch (e) { }
-                }
-            }
-        }
+
 
         // Detect iOS
         const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
