@@ -94,7 +94,7 @@ class EnsembleDiseasePredictor:
                 
                 # Crop Consistency Check
                 is_relevant = True
-                if crop_name:
+                if crop_name and crop_name != "Live Capture":
                     # Extract crop from class name (e.g., "Apple___Black_rot" -> "Apple")
                     predicted_crop = class_name.split("___")[0]
                     if crop_name.lower() not in predicted_crop.lower() and predicted_crop.lower() not in crop_name.lower():
@@ -397,20 +397,42 @@ class EnsembleDiseasePredictor:
         text = text_description.lower()
         
         # Simple keyword map
+        # Enhanced keyword map (handling partial matches implicitly via iteration)
         keywords = {
-            "yellow spots": "Early Blight",
-            "white powder": "Powdery Mildew",
-            "wilting": "Bacterial Wilt",
+            # General
+            "yellow": "Nitrogen Deficiency or Viral Infection",
+            "curl": "Leaf Curl Virus",
+            "spot": "Leaf Spot (Fungal)",
+            "wilt": "Bacterial Wilt",
+            "powder": "Powdery Mildew",
+            "white": "Powdery Mildew",
+            "rot": "Rot (Root/Fruit)",
+            "black": "Black Rot or Sooty Mold",
+            "hole": "Insect Damage (e.g. Caterpillar)",
             "worm": "Fall Armyworm",
-            "holes in leaves": "Fall Armyworm",
-            "rust": "Wheat Rust"
+            
+            # Specific Combinations (Priority)
+            "early blight": "Early Blight",
+            "late blight": "Late Blight",
+            "bacterial spot": "Bacterial Spot",
+            "leaf mold": "Leaf Mold",
+            "spider mite": "Spider Mites",
+            "mosaic": "Mosaic Virus",
+            "yellow spot": "Early Blight",
+            "yellow leaf": "Yellow Leaf Curl Virus"
         }
         
         detected = []
+        # Priority check for multi-word phrases first
         for key, val in keywords.items():
-            if key in text:
-                detected.append(val)
-                
+            if " " in key and key in text:
+                 detected.append(val)
+        
+        # If no specific multi-word match, check single words
+        if not detected:
+            for key, val in keywords.items():
+                if key in text:
+                    detected.append(val)                
         if detected:
             # Return the most frequent or first one
             disease = detected[0]

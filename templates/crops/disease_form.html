@@ -17,6 +17,10 @@
                     <canvas id="capture-canvas" style="display: none;"></canvas>
                 </div>
                 <div id="camera-controls" class="mt-3">
+                    <div class="mb-3" style="max-width: 300px; margin: 0 auto;">
+                        <input type="text" id="camera-crop-name" class="form-control"
+                            placeholder="Crop Name (Optional, e.g. Tomato)">
+                    </div>
                     <button id="start-camera-btn" class="btn btn-outline-success btn-lg">
                         <i class="bi bi-camera"></i> Start Camera
                     </button>
@@ -84,7 +88,8 @@
                         const formData = new FormData();
                         formData.append('image', blob, 'live_capture.jpg');
                         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-                        formData.append('crop_name', 'Live Capture'); // Default or could add input
+                        const cropNameInput = document.getElementById('camera-crop-name').value;
+                        formData.append('crop_name', cropNameInput); // Use user input
 
                         // Show analyzing state
                         liveResult.style.display = 'block';
