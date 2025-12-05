@@ -109,16 +109,16 @@ if os.getenv('DATABASE_URL'):
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
 
-# MySQL Configuration (Optional Override)
-elif os.getenv('MYSQL_HOST'):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'crop_db'),
-        'USER': os.getenv('MYSQL_USER', 'crop_user'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'crop_password'),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-    }
+# MySQL Configuration (Optional Override) - Commented out to prevent Render deployment errors
+# elif os.getenv('MYSQL_HOST'):
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('MYSQL_DATABASE', 'crop_db'),
+#         'USER': os.getenv('MYSQL_USER', 'crop_user'),
+#         'PASSWORD': os.getenv('MYSQL_PASSWORD', 'crop_password'),
+#         'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+#         'PORT': os.getenv('MYSQL_PORT', '3306'),
+#     }
 
 
 # Password validation
